@@ -1,5 +1,5 @@
 import './index.css'
-import { createRoot } from 'react-dom/client'
+import ReactDOM from "react-dom/client";
 import App from './App.tsx'
 import store from './redux/store.ts'
 import Home from './pages/Home.tsx'
@@ -17,13 +17,14 @@ const router = createBrowserRouter(
       <Route index={true} path='/' element={<Home />}/>
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
+ 
       <Route path="" element={<PrivateRoute />}>
         <Route path="/profile" element={<Profile />} />
       </Route>
     </Route>
   )
 )
-createRoot(document.getElementById('root')!).render(
+ReactDOM.createRoot(document.getElementById('root')!).render(
     <Provider store={store}>
       <RouterProvider router={router} />
     </Provider>
