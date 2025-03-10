@@ -58,10 +58,10 @@ export default function Component() {
           <form onSubmit={submitHandler}>
             <div className="flex flex-col gap-6">
               <div className="grid gap-3">
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="username">Username</Label>
                 <Input
                   type="text"
-                  id="name"
+                  id="username"
                   placeholder="example123"
                   required
                   value={username}
@@ -93,7 +93,7 @@ export default function Component() {
               </div>
               <div className="grid gap-3">
                 <div className="flex items-center">
-                  <Label htmlFor="password">Password</Label>
+                  <Label htmlFor="confirmPassword">New Password</Label>
                 </div>
                 <Input 
                     id="confirmPassword"

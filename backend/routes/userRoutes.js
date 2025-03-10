@@ -19,8 +19,7 @@ router
 router.post("/auth", loginUser);
 router.post("/logout", logoutCurrentUser);
 
-router
-  .route("/profile")
+router.route("/profile")
   .get(authenticate, getCurrentUserProfile)
   .put(authenticate, updateCurrentUserProfile);
 

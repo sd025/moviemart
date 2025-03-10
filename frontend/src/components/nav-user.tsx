@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom"
-import { useDispatch, useSelector } from "react-redux"
+import { useDispatch } from "react-redux"
 import { useLogoutMutation } from "../redux/api/users"
 import { logout } from "../redux/features/auth/authSlice"
 import {
@@ -8,6 +8,7 @@ import {
   CircleUser,
   LogIn,
   LogOut,
+  ShieldUser,
   UserRoundPlus,
   UsersRound,
 } from "lucide-react"
@@ -15,7 +16,6 @@ import {
 import {
   Avatar,
   AvatarFallback,
-  AvatarImage,
 } from "@/components/ui/avatar"
 import {
   DropdownMenu,
@@ -137,6 +137,7 @@ export function NavUser({
                   <>
                     <DropdownMenuItem asChild>
                       <Link to="/admin/movies/dashboard">
+                        <ShieldUser />
                         Dashboard
                       </Link>
                     </DropdownMenuItem>
