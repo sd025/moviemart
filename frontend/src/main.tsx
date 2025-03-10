@@ -8,7 +8,7 @@ import {Route, RouterProvider, createRoutesFromElements} from 'react-router'
 import { createBrowserRouter } from 'react-router-dom'
 import Login from './pages/Auth/Login.tsx'
 import Register from './pages/Auth/Register.tsx'
-import Profile from './pages/Uesr/Profile.tsx'
+import Profile from './pages/User/Profile.tsx'
 import PrivateRoute from './pages/Auth/PrivateRoute.tsx'
 
 const router = createBrowserRouter(

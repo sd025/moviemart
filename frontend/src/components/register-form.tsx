@@ -30,7 +30,7 @@ export function RegisterForm({
   
     const [register, { isLoading }] = useRegisterMutation();
   
-    const { userInfo } = useSelector((state) => state.auth);
+    const { userInfo } = useSelector((state: any) => state.auth);
   
     const { search } = useLocation();
     const sp = new URLSearchParams(search);
@@ -129,12 +129,12 @@ export function RegisterForm({
               </div>
             </div>
             <div className="mt-4 text-center text-sm">
-              Don&apos;t have an account?{" "}
+              Already have an account?{" "}
                 <Link
                     to={redirect ? `/login?redirect=${redirect}` : "/login"}
                     className="underline underline-offset-4"
                 >
-                    Sign up
+                    Log In
                 </Link>
             </div>
             {isLoading && 'Loading...'}

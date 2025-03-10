@@ -5,6 +5,7 @@ import {
   Bot,
   Command,
   Frame,
+  House,
   Map,
   PieChart,
   Popcorn,
@@ -23,14 +24,14 @@ import {
   SidebarHeader,
   SidebarRail,
 } from "@/components/ui/sidebar"
+import { useSelector } from "react-redux"
 
-// This is sample data.
 const data = {
-  user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
+  // user: {
+  //   name: "shadcn",
+  //   email: "m@example.com",
+  //   avatar: "/avatars/shadcn.jpg",
+  // },
   teams: [
     {
       name: "Netflix",
@@ -138,6 +139,11 @@ const data = {
   ],
   projects: [
     {
+      name: "Home",
+      url: "/",
+      icon: House,
+    },
+    {
       name: "My List",
       url: "#",
       icon: Frame,
@@ -156,6 +162,7 @@ const data = {
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const { userInfo } = useSelector((state:any) => state.auth);
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
@@ -166,7 +173,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavProjects projects={data.projects} />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser user={userInfo} />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

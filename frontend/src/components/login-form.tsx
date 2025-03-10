@@ -29,7 +29,7 @@ export function LoginForm({
 
   const [login, { isLoading }] = useLoginMutation();
 
-  const { userInfo } = useSelector((state) => state.auth);
+  const { userInfo } = useSelector((state: any) => state.auth);
 
   const { search } = useLocation();
   const sp = new URLSearchParams(search);

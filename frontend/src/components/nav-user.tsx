@@ -1,11 +1,14 @@
 import { Link, useNavigate } from "react-router-dom"
-import { useDispatch } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import { useLogoutMutation } from "../redux/api/users"
 import { logout } from "../redux/features/auth/authSlice"
 import {
   BadgeCheck,
   ChevronsUpDown,
+  CircleUser,
+  LogIn,
   LogOut,
+  UserRoundPlus,
   UsersRound,
 } from "lucide-react"
 
@@ -35,9 +38,9 @@ export function NavUser({
 }: {
   user: {
     isAdmin?: any
-    name: string
+    username: string
     email: string
-    avatar: string
+    avatar?: string
   }
 }) {
 
@@ -55,6 +58,7 @@ export function NavUser({
       console.error(error)
     }
   }
+
   return (
     <SidebarMenu>
       <SidebarMenuItem>
@@ -65,12 +69,27 @@ export function NavUser({
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
               <Avatar className="h-8 w-8 rounded-lg">
-                <AvatarImage src={user.avatar} alt={user.name} />
-                <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+                {user ? (
+                  <AvatarFallback className="rounded-lg">
+                    {user ? user.username.slice(0, 2).toUpperCase() : ""}
+                  </AvatarFallback>
+                  ) : (
+                    <AvatarFallback className="rounded-lg">
+                      <CircleUser />
+                    </AvatarFallback>
+                )}
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-medium">{user.name}</span>
-                <span className="truncate text-xs">{user.email}</span>
+                {user ? (
+                  <>
+                    <span className="truncate font-medium">
+                      {user.username}
+                    </span>
+                    <span className="truncate text-xs">{user.email}</span>
+                  </>
+                ) : (
+                  <span className="truncate font-medium">Try It Now!</span>
+                )}
               </div>
               <ChevronsUpDown className="ml-auto size-4" />
             </SidebarMenuButton>
@@ -81,47 +100,68 @@ export function NavUser({
             align="end"
             sideOffset={4}
           >
-            <DropdownMenuLabel className="p-0 font-normal">
-              <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-                <Avatar className="h-8 w-8 rounded-lg">
-                  <AvatarImage src={user.avatar} alt={user.name} />
-                  <AvatarFallback className="rounded-lg">CN</AvatarFallback>
-                </Avatar>
-                <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-medium">{user.name}</span>
-                  <span className="truncate text-xs">{user.email}</span>
+          {!user ? ( 
+            <>
+              <DropdownMenuItem asChild>
+                <Link to="/login" className="flex items-center gap-2 p-2">
+                  <LogIn className="h-4 w-4" />
+                  Login
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem asChild>
+                <Link to="/register" className="flex items-center gap-2 p-2">
+                  <UserRoundPlus className="h-4 w-4" />
+                  Register
+                </Link>
+              </DropdownMenuItem>
+              </>
+            ) : (
+            <>
+              <DropdownMenuLabel className="p-0 font-normal">
+                <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
+                  <Avatar className="h-8 w-8 rounded-lg">
+                    <AvatarFallback className="rounded-lg">
+                      {user ? user.username.slice(0, 2).toUpperCase() : ""}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="grid flex-1 text-left text-sm leading-tight">
+                    <span className="truncate font-medium">{user.username}</span>
+                    <span className="truncate text-xs">{user.email}</span>
+                  </div>
                 </div>
-              </div>
-            </DropdownMenuLabel>
-            <DropdownMenuSeparator />
-              <DropdownMenuGroup>
-              {user.isAdmin && (
-                <>
-                  <DropdownMenuItem asChild>
-                    <Link to="/admin/movies/dashboard">
-                      Dashboard
-                    </Link>
-                  </DropdownMenuItem>
-                </>
-              )}
-              <DropdownMenuItem asChild>
-                <Link to="/profile">
-                  <BadgeCheck />
-                  Account
-                </Link>
+              </DropdownMenuLabel>
+              <DropdownMenuSeparator />
+                <DropdownMenuGroup>
+                {user.isAdmin && (
+                  <>
+                    <DropdownMenuItem asChild>
+                      <Link to="/admin/movies/dashboard">
+                        Dashboard
+                      </Link>
+                    </DropdownMenuItem>
+                  </>
+                )}
+                <DropdownMenuItem asChild>
+                  <Link to="/profile">
+                    <BadgeCheck />
+                    Account
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/profile">
+                    <UsersRound />
+                    Manage profiles
+                  </Link>
+                </DropdownMenuItem>
+              </DropdownMenuGroup>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={logoutHandler}>
+                <LogOut />
+                Log out
               </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link to="/profile">
-                  <UsersRound />
-                  Manage profiles
-                </Link>
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={logoutHandler}>
-              <LogOut />
-              Log out
-            </DropdownMenuItem>
+            </>
+            )}
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarMenuItem>
