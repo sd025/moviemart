@@ -25,6 +25,7 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar"
 import { useSelector } from "react-redux"
+import { SearchForm } from "./search-form"
 
 const data = {
   // user: {
@@ -169,6 +170,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <TeamSwitcher teams={data.teams} />
       </SidebarHeader>
       <SidebarContent>
+      <SearchForm className="pt-2" />
         <NavMain items={data.navMain} />
         <NavProjects projects={data.projects} />
       </SidebarContent>

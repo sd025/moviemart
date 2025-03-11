@@ -10,13 +10,29 @@ const createUser = asyncHandler(async (req, res) => {
     throw new Error("Please fill all the fields");
   }
 
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  if (!emailRegex.test(email)) {
+    throw new Error("Invalid email");
+  }
+
+  if (password.length < 6) {
+    throw new Error("Password must be at least 6 characters");
+  }
+
   const userExists = await User.findOne({ email });
   if (userExists) res.status(400).send("User already exists");
 
-  // Hash the user password
   const salt = await bcrypt.genSalt(10);
   const hashedPassword = await bcrypt.hash(password, salt);
   const newUser = new User({ username, email, password: hashedPassword });
+
+  const defaultProfile = { name: username, avatar: "default-avatar.png", preferences: {} };
+  newUser.profiles.push(defaultProfile);
+
+  await newUser.save();
+  newUser.activeProfile = newUser.profiles[0]._id;
+  await newUser.save();
 
   try {
     await newUser.save();

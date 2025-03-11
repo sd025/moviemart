@@ -150,7 +150,7 @@ export function NavUser({
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                  <Link to="/profile">
+                  <Link to="/profiles">
                     <UsersRound />
                     Manage profiles
                   </Link>
