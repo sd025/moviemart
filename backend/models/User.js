@@ -4,8 +4,6 @@ const profileSchema = mongoose.Schema(
       name: { type: String, required: true },
       avatar: { type: String},
       preferences: { type: Object, default: {} },
-      watchlist: [{ type: Schema.Types.ObjectId, ref: 'Content' }],
-      recentlyWatched: [{ type: Schema.Types.ObjectId, ref: 'Content' }],
       searchHistory: [{ type: String }],
     
     },

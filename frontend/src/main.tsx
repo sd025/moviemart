@@ -10,6 +10,7 @@ import Login from './pages/Auth/Login.tsx'
 import Register from './pages/Auth/Register.tsx'
 import Profile from './pages/User/Profile.tsx'
 import PrivateRoute from './pages/Auth/PrivateRoute.tsx'
+import ManageProfiles from './pages/User/Manage.tsx';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -20,6 +21,7 @@ const router = createBrowserRouter(
  
       <Route path="" element={<PrivateRoute />}>
         <Route path="/profile" element={<Profile />} />
+        <Route path="/profiles" element={<ManageProfiles />} />
       </Route>
     </Route>
   )
