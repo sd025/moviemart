@@ -1,22 +1,17 @@
 import * as React from "react"
 import {
-  AudioWaveform,
   BookOpen,
   Bot,
-  Command,
   Frame,
   House,
-  Map,
-  PieChart,
   Popcorn,
-  Settings2,
   SquareTerminal,
 } from "lucide-react"
 
 import { NavMain } from "@/components/nav-main"
 import { NavProjects } from "@/components/nav-projects"
 import { NavUser } from "@/components/nav-user"
-import { TeamSwitcher } from "@/components/team-switcher"
+import { ProfileSwitcher } from "@/components/profile-switcher"
 import {
   Sidebar,
   SidebarContent,
@@ -26,13 +21,10 @@ import {
 } from "@/components/ui/sidebar"
 import { useSelector } from "react-redux"
 import { SearchForm } from "./search-form"
+import { TeamSwitcher } from "./team-switcher"
+import { useGetProfilesQuery } from "@/redux/api/users"
 
 const data = {
-  // user: {
-  //   name: "shadcn",
-  //   email: "m@example.com",
-  //   avatar: "/avatars/shadcn.jpg",
-  // },
   teams: [
     {
       name: "Netflix",
@@ -164,10 +156,12 @@ const data = {
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { userInfo } = useSelector((state:any) => state.auth);
+  const { data: profiles } = useGetProfilesQuery();
+  
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
-        <TeamSwitcher teams={data.teams} />
+        <TeamSwitcher teams={profiles} />
       </SidebarHeader>
       <SidebarContent>
       <SearchForm className="pt-2" />

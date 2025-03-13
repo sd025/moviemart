@@ -7,12 +7,16 @@ import {
   useDeleteProfileMutation,
   useSwitchProfileMutation,
 } from "../../redux/api/users";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setActiveProfile } from "../../redux/features/auth/authSlice";
 import { useNavigate } from "react-router";
-import { Pencil, Plus } from "lucide-react";
+import { Pencil, Plus, Trash } from "lucide-react";
 
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 export default function ManageProfiles() {
   const { data: profiles, isLoading, isError } = useGetProfilesQuery();
@@ -24,6 +28,7 @@ export default function ManageProfiles() {
   const [newProfileName, setNewProfileName] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const activeProfile = useSelector((state: any) => state.auth.activeProfile);
 
   const handleCreate = async () => {
     if (!newProfileName.trim()) {
@@ -79,59 +84,79 @@ export default function ManageProfiles() {
   };
 
   return (
-      <div className="flex flex-col items-center justify-center min-h-screen bg-black text-white">
-        <div className="w-full max-w-4xl px-4">
-          <h1 className="text-5xl font-medium text-center mb-16">Manage Profiles:</h1>
-  
-          <div className="flex flex-wrap justify-center gap-6 mb-16">
-            {profiles.map((profile: any) => (
-              <div key={profile.id} className="flex flex-col items-center">
-                <div className="relative w-36 h-36 mb-4">
-                  {profile.type === "children" ? (
-                    <div className="w-full h-full rounded-md overflow-hidden">
-                      <div className="flex h-full">
-                        <div className="w-1/4 h-full bg-green-800"></div>
-                        <div className="w-1/4 h-full bg-orange-500"></div>
-                        <div className="w-1/4 h-full bg-pink-500"></div>
-                        <div className="w-1/4 h-full bg-blue-600"></div>
-                      </div>
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <span className="text-3xl font-bold text-red-500">children</span>
-                      </div>
+    <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
+      <div className="w-full max-w-sm">
+    <Card>
+      <CardHeader>
+        <CardTitle>
+          <span className="text-3xl font-medium text-center mb-16">Manage Profiles</span>
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="grid gap-6">
+        {isLoading ? (
+            <p className="text-white">Loading profiles...</p>
+          ) : isError ? (
+            <p className="text-red-500">Error loading profiles.</p>
+          ) : (
+            <>
+              {profiles && profiles.length > 0 ? (
+              <RadioGroup 
+                value={activeProfile ? activeProfile._id : profiles[0]?._id}
+                className="grid grid-cols-3 gap-4"
+              >
+              {profiles.map((profile: any) => (
+                <div key={profile.id}>
+                  <RadioGroupItem
+                    value={profile._id}
+                    id={`profile-${profile._id}`}
+                    className="peer sr-only"
+                    aria-label={profile.name}
+                    onClick={() => handleSwitch(profile._id)}
+                  />
+                  <Label
+                    htmlFor={`profile-${profile._id}`}
+                    className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-transparent p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary"
+                  >
+                    {profile.name}
+                    <div className="flex gap-2">
+                      <Button
+                        className="border-neutral-900"
+                        onClick={() => handleUpdate(profile._id, profile.name)}
+                        >
+                        <Pencil />
+                      </Button>
+                      <Button
+                        variant="outline"
+                        className="border-neutral-600 text-red-500 hover:bg-red-500 hover:text-white"
+                        onClick={() => handleDelete(profile._id)}
+                        >
+                        <Trash />
+                      </Button>
                     </div>
-                  ) : (
-                    <div className={`w-full h-full ${profile.color} rounded-md flex items-center justify-center`}>
-                      <div className="flex space-x-16">
-                        <div className="w-3 h-3 bg-gray-400 rounded-full"></div>
-                        <div className="w-3 h-3 bg-gray-400 rounded-full"></div>
-                      </div>
-                    </div>
-                  )}
-  
-                  <button className="absolute bottom-2 right-2 w-10 h-10 bg-transparent flex items-center justify-center">
-                    <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center">
-                      <Pencil className="w-5 h-5 text-black" />
-                    </div>
-                  </button>
+                  </Label>
                 </div>
-                <span className="text-gray-300 text-lg">{profile.name}</span>
-              </div>
-            ))}
-  
-            <div className="flex flex-col items-center">
-              <div className="w-36 h-36 mb-4 flex items-center justify-center">
-                <div className="w-20 h-20 bg-gray-700 rounded-full flex items-center justify-center">
-                  <Plus className="w-10 h-10 text-gray-300" />
-                </div>
-              </div>
-              <span className="text-gray-300 text-lg">Add Profile</span>
-            </div>
-          </div>
-  
-          <div className="flex justify-center">
-            <button className="px-10 py-2 bg-white text-black font-medium text-lg">Manage</button>
-          </div>
+              ))}
+            </RadioGroup>
+              ) : (
+              <p className="text-white">No profiles found.</p>
+            )}
+          </>
+        )}
+        <div className="grid gap-2">
+          <Label htmlFor="name">Name</Label>
+          <Input 
+            id="name"
+            placeholder="Enter profile name"
+            value={newProfileName}
+            onChange={(e) => setNewProfileName(e.target.value)}
+          />
         </div>
-      </div>
+      </CardContent>
+      <CardFooter>
+        <Button className="w-full" onClick={handleCreate}>Continue</Button>
+      </CardFooter>
+    </Card>
+  </div>
+  </div>
   );
 }

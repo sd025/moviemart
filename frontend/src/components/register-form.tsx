@@ -15,6 +15,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setCredentials } from "../redux/features/auth/authSlice";
 import { useRegisterMutation } from "../redux/api/users";
 import { toast } from "react-toastify";
+import { Loader2 } from "lucide-react"
 
 export function RegisterForm({
   className,
@@ -137,7 +138,12 @@ export function RegisterForm({
                     Log In
                 </Link>
             </div>
-            {isLoading && 'Loading...'}
+            {isLoading && 
+              <Button disabled>
+                <Loader2 className="animate-spin" />
+                Please wait
+              </Button>
+            }
           </form>
         </CardContent>
       </Card>

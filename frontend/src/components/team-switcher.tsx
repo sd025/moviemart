@@ -1,5 +1,5 @@
 import * as React from "react"
-import { ChevronsUpDown, Plus } from "lucide-react"
+import { ChevronsUpDown, Plus, Popcorn } from "lucide-react"
 
 import {
   DropdownMenu,
@@ -16,21 +16,36 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar"
+import { useSwitchProfileMutation } from "@/redux/api/users"
+import { setActiveProfile } from "@/redux/features/auth/authSlice"
+import { toast } from "react-toastify"
+import { useDispatch, useSelector } from "react-redux";
 
 export function TeamSwitcher({
   teams,
 }: {
   teams: {
+    _id: string
     name: string
-    logo: React.ElementType
-    plan: string
   }[]
 }) {
-  const [activeTeam, setActiveTeam] = React.useState(teams[0])
 
-  if (!activeTeam) {
-    return null
-  }
+  const { isMobile } = useSidebar()
+    const [switchProfile] = useSwitchProfileMutation();
+    const dispatch = useDispatch();
+  
+    const handleSwitch = async (profileId: string) => {
+      try {
+        const res = await switchProfile(profileId).unwrap();
+        dispatch(setActiveProfile(res.activeProfile));
+        toast.success(`Switched to profile: ${res.activeProfile.name}`);
+      } catch (error: any) {
+        console.error("Switch error:", error);
+        toast.error(error?.data?.message || "Error switching profile");
+      }
+    };
+    const { activeProfile } = useSelector((state:any) => state.auth);
+  
 
   return (
     <SidebarMenu>
@@ -42,45 +57,33 @@ export function TeamSwitcher({
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
               <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
-                <activeTeam.logo className="size-4" />
+                <Popcorn className="size-4" />
               </div>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-medium">{activeTeam.name}</span>
-                <span className="truncate text-xs">{activeTeam.plan}</span>
+                <span className="truncate font-medium">{activeProfile.name}</span>
               </div>
-              {/* <ChevronsUpDown className="ml-auto" /> */}
+              <ChevronsUpDown className="ml-auto" />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
-          {/* <DropdownMenuContent
+          <DropdownMenuContent
             className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
             align="start"
             side={isMobile ? "bottom" : "right"}
             sideOffset={4}
           >
             <DropdownMenuLabel className="text-muted-foreground text-xs">
-              Teams
+              Your Profiles
             </DropdownMenuLabel>
-            {teams.map((team, index) => (
+            {teams.map((profile) => (
               <DropdownMenuItem
-                key={team.name}
-                onClick={() => setActiveTeam(team)}
+                key={profile.name}
+                onClick={() => handleSwitch(profile._id)}
                 className="gap-2 p-2"
               >
-                <div className="flex size-6 items-center justify-center rounded-xs border">
-                  <team.logo className="size-4 shrink-0" />
-                </div>
-                {team.name}
-                <DropdownMenuShortcut>⌘{index + 1}</DropdownMenuShortcut>
+                {profile.name}
               </DropdownMenuItem>
             ))}
-            <DropdownMenuSeparator />
-            <DropdownMenuItem className="gap-2 p-2">
-              <div className="bg-background flex size-6 items-center justify-center rounded-md border">
-                <Plus className="size-4" />
-              </div>
-              <div className="text-muted-foreground font-medium">Add team</div>
-            </DropdownMenuItem>
-          </DropdownMenuContent> */}
+          </DropdownMenuContent>
         </DropdownMenu>
       </SidebarMenuItem>
     </SidebarMenu>
